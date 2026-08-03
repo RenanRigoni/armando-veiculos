@@ -5,15 +5,16 @@ import { ButtonLink } from "@/components/ui/Button";
 import { business, formatFullAddress } from "@/config/business";
 import { messages, whatsappLinks } from "@/lib/whatsapp";
 
+/** Sem URL de embed cadastrada pelo dono, usa o endereço verificado para gerar o mapa. */
+const mapsEmbedSrc =
+  business.mapsEmbedUrl ??
+  `https://www.google.com/maps?q=${encodeURIComponent(formatFullAddress())}&output=embed`;
+
 export function ContactSection() {
   return (
     <Section id="contato" tone="surface">
       <SectionHeading title="Localização e contato" />
-      <div
-        className={
-          business.mapsEmbedUrl ? "grid gap-8 lg:grid-cols-2 lg:gap-12" : "max-w-2xl"
-        }
-      >
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="flex flex-col gap-5 text-base">
           <ul className="flex flex-col gap-5">
             <li className="flex gap-3">
@@ -48,15 +49,13 @@ export function ContactSection() {
           </div>
         </div>
 
-        {business.mapsEmbedUrl ? (
-          <iframe
-            src={business.mapsEmbedUrl}
-            title={`Mapa da ${business.name}`}
-            className="border-border aspect-[4/3] w-full rounded-md border"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        ) : null}
+        <iframe
+          src={mapsEmbedSrc}
+          title={`Mapa da ${business.name}`}
+          className="border-border aspect-[4/3] w-full rounded-md border"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
       </div>
     </Section>
   );

@@ -20,25 +20,20 @@ export type CategoryCardData = {
 
 export function CategoryCards({ categories }: { categories: CategoryCardData[] }) {
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-      {categories.map((item, index) => (
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+      {categories.map((item) => (
         <Link
           key={item.category}
           href={`/estoque?categoria=${item.category}`}
           className={cn(
             "group border-border bg-surface relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md border",
-            index === 0 ? "sm:col-span-2 sm:aspect-[2/1]" : "sm:aspect-[4/3]",
           )}
         >
           <Image
             src={item.image}
             alt={CATEGORY_LABELS[item.category]}
             fill
-            sizes={
-              index === 0
-                ? "(min-width: 640px) 100vw, 92vw"
-                : "(min-width: 640px) 50vw, 92vw"
-            }
+            sizes="(min-width: 640px) 33vw, 92vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="from-ink absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
