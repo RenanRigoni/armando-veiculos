@@ -276,10 +276,18 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
         </div>
         <div>
           <Label htmlFor="previousPrice">Preço anterior (opcional)</Label>
-          <Input id="previousPrice" type="number" inputMode="numeric" {...register("previousPrice")} />
+          <Input
+            id="previousPrice"
+            type="number"
+            inputMode="numeric"
+            aria-invalid={Boolean(errors.previousPrice)}
+            aria-describedby={errors.previousPrice ? "previous-price-error" : undefined}
+            {...register("previousPrice")}
+          />
+          <FieldError id="previous-price-error">{errors.previousPrice?.message}</FieldError>
         </div>
         <div>
-          <Label htmlFor="financingNote">Observação de financiamento</Label>
+          <Label htmlFor="financingNote">Observação de financiamento (opcional)</Label>
           <Input id="financingNote" {...register("financingNote")} />
         </div>
       </section>
