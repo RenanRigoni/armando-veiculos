@@ -18,7 +18,7 @@ export default async function EditVehiclePage({ params }: EditVehiclePageProps) 
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-3xl normal-case">{vehicle.title ?? "Editar veículo"}</h1>
-        <p className="text-fg-muted mt-1 text-sm">Slug: {vehicle.slug ?? "—"}</p>
+        <p className="text-fg-muted mt-1 text-sm">Slug: {vehicle.slug ?? "não definido"}</p>
       </div>
 
       <section className="border-border bg-surface rounded-md border p-6">

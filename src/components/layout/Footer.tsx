@@ -30,11 +30,14 @@ export function Footer() {
           </div>
 
           <nav aria-label="Institucional">
-            <h3 className="mb-4 text-lg">Navegação</h3>
+            <h2 className="mb-4 text-lg">Navegação</h2>
             <ul className="flex flex-col gap-2">
               {institutionalLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-fg-muted hover:text-brand text-sm">
+                  <Link
+                    href={link.href}
+                    className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center text-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -43,11 +46,14 @@ export function Footer() {
           </nav>
 
           <nav aria-label="Categorias">
-            <h3 className="mb-4 text-lg">Categorias</h3>
+            <h2 className="mb-4 text-lg">Categorias</h2>
             <ul className="flex flex-col gap-2">
               {categoryNav.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-fg-muted hover:text-brand text-sm">
+                  <Link
+                    href={link.href}
+                    className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center text-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -56,7 +62,7 @@ export function Footer() {
           </nav>
 
           <div>
-            <h3 className="mb-4 text-lg">Contato</h3>
+            <h2 className="mb-4 text-lg">Contato</h2>
             <ul className="flex flex-col gap-3 text-sm">
               <li className="flex gap-2">
                 <MapPin size={16} className="text-brand mt-0.5 shrink-0" aria-hidden />
@@ -64,12 +70,15 @@ export function Footer() {
               </li>
               <li className="flex gap-2">
                 <Phone size={16} className="text-brand mt-0.5 shrink-0" aria-hidden />
-                <a href={business.phone.href} className="text-fg-muted hover:text-brand">
+                <a
+                  href={business.phone.href}
+                  className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center"
+                >
                   {business.phone.display}
                 </a>
               </li>
               <li className="text-fg-muted">
-                Financiamento: {business.financing.contactName} — {business.financing.phoneDisplay}
+                Financiamento: {business.financing.contactName}, {business.financing.phoneDisplay}
               </li>
             </ul>
 
@@ -81,7 +90,7 @@ export function Footer() {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-fg-muted hover:text-brand text-sm capitalize"
+                      className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center text-sm capitalize"
                     >
                       {name}
                     </a>
@@ -92,18 +101,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-border text-fg-muted mt-12 flex flex-col gap-2 border-t pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            {business.name} — CNPJ {business.cnpj}
-          </p>
-          <div className="flex gap-4">
-            <Link href="/politica-de-privacidade" className="hover:text-brand">
-              Política de privacidade
-            </Link>
-            <Link href="/termos-de-uso" className="hover:text-brand">
-              Termos de uso
-            </Link>
-          </div>
+        <div className="border-border text-fg-muted mt-12 border-t pt-6 text-xs">
+          <p>{business.name}, CNPJ {business.cnpj}</p>
         </div>
       </div>
     </footer>

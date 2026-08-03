@@ -8,12 +8,12 @@ export default function EstoqueLoading() {
   return (
     <>
       <Header />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Section tone="surface" className="py-8 md:py-10">
           <Skeleton className="h-11 w-full" />
         </Section>
         <Section>
-          <SectionHeading title="Estoque" />
+          <SectionHeading level={1} title="Estoque" />
           <VehicleGridSkeleton />
         </Section>
       </main>

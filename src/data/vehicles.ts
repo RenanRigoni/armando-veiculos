@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { createClient } from "@/lib/supabase/server";
 import { resolveImageUrl } from "@/lib/images";
 import type {
@@ -164,7 +166,9 @@ export async function getVehicles(
   };
 }
 
-export async function getVehicleBySlug(slug: string): Promise<Vehicle | null> {
+export const getVehicleBySlug = cache(async function getVehicleBySlug(
+  slug: string,
+): Promise<Vehicle | null> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -181,7 +185,7 @@ export async function getVehicleBySlug(slug: string): Promise<Vehicle | null> {
   if (!isCompleteVehicleRow(row)) return null;
 
   return mapVehicle(row);
-}
+});
 
 export async function getFeaturedVehicles(limit = 6): Promise<Vehicle[]> {
   const supabase = await createClient();

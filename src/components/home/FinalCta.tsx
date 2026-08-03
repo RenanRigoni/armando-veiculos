@@ -11,13 +11,13 @@ export function FinalCta() {
         Não encontrou o veículo que procura?
       </h2>
       <p className="text-fg-muted mx-auto mt-4 max-w-lg text-base">
-        Conte para a nossa equipe qual modelo você busca — avisamos assim que ele entrar no
+        Conte para a nossa equipe qual modelo você busca. Avisamos assim que ele entrar no
         estoque.
       </p>
       <div className="mt-8">
         <ButtonLink href={whatsappLinks.sales(messages.quickContact())} size="lg">
           <MessageCircle size={18} aria-hidden />
-          Falar com um consultor
+          Falar no WhatsApp
         </ButtonLink>
       </div>
     </Section>

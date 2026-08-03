@@ -1,12 +1,14 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 import { Label, Select } from "@/components/ui/Field";
 import { buildEstoqueSearchParams } from "@/lib/estoqueQuery";
+import { formatBRL } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { CATEGORY_LABELS, isVehicleCategory } from "@/types/vehicle";
 import type { InventoryFacets, VehicleFilters } from "@/types/vehicle";
 
@@ -25,6 +27,7 @@ type SearchFiltersProps = {
 export function SearchFilters({ facets, initialValues, onApplied }: SearchFiltersProps) {
   const router = useRouter();
   const idPrefix = useId();
+  const [isPending, startTransition] = useTransition();
 
   const [category, setCategory] = useState(initialValues.category ?? "");
   const [make, setMake] = useState(initialValues.make ?? "");
@@ -48,14 +51,19 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
     };
 
     const query = buildEstoqueSearchParams(filters).toString();
-    router.push(query ? `/estoque?${query}` : "/estoque");
-    onApplied?.();
+    startTransition(() => {
+      router.push(query ? `/estoque?${query}` : "/estoque");
+      onApplied?.();
+    });
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 lg:items-end"
+      className={cn(
+        "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:items-end",
+        category === "carros" ? "lg:grid-cols-4 xl:grid-cols-7" : "lg:grid-cols-6",
+      )}
     >
       <div className="col-span-2 sm:col-span-1">
         <Label htmlFor={`${idPrefix}-categoria`}>Categoria</Label>
@@ -131,7 +139,7 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
           <option value="">Sem limite</option>
           {[80000, 120000, 160000, 200000, 300000, 500000].map((value) => (
             <option key={value} value={value}>
-              {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(value)}
+              {formatBRL(value)}
             </option>
           ))}
         </Select>
@@ -155,10 +163,18 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
         </div>
       ) : null}
 
-      <Button type="submit" className="col-span-2 sm:col-span-1 lg:col-span-1">
+      <Button
+        type="submit"
+        disabled={isPending}
+        aria-describedby={`${idPrefix}-status`}
+        className="col-span-2 sm:col-span-1 lg:col-span-1"
+      >
         <Search size={16} aria-hidden />
-        Buscar veículos
+        {isPending ? "Buscando..." : "Buscar veículos"}
       </Button>
+      <span id={`${idPrefix}-status`} className="sr-only" aria-live="polite">
+        {isPending ? "Atualizando resultados" : ""}
+      </span>
     </form>
   );
 }

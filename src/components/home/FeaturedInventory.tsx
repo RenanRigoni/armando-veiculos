@@ -10,7 +10,7 @@ export function FeaturedInventory({ vehicles }: { vehicles: Vehicle[] }) {
       <SectionHeading
         title="Veículos em destaque"
         description="Uma seleção do estoque disponível agora."
-        action={<ButtonLink href="/estoque">Ver estoque completo</ButtonLink>}
+        action={<ButtonLink href="/estoque">Ver estoque</ButtonLink>}
       />
       {vehicles.length > 0 ? <VehicleGrid vehicles={vehicles} /> : <EmptyState />}
     </Section>

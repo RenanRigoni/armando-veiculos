@@ -7,9 +7,9 @@ export default function NotFound() {
   return (
     <>
       <Header />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Section className="text-center">
-          <p className="font-display text-brand text-6xl md:text-8xl">404</p>
+          <p className="font-display text-brand-text text-6xl md:text-8xl">404</p>
           <h1 className="mt-4 text-3xl md:text-4xl">Página não encontrada</h1>
           <p className="text-fg-muted mx-auto mt-3 max-w-md">
             O endereço que você acessou não existe ou o veículo saiu do estoque.

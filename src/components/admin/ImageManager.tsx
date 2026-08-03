@@ -3,9 +3,21 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import type { DragEndEvent } from "@dnd-kit/core";
-import { SortableContext, arrayMove, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 import { ImagePlus } from "lucide-react";
 
 import { ImageThumb } from "@/components/admin/ImageThumb";
@@ -35,9 +47,13 @@ export function ImageManager({ vehicleId, images, coverImage }: ImageManagerProp
   const router = useRouter();
   const [order, setOrder] = useState(images.map((image) => image.id));
   const [tasks, setTasks] = useState<UploadTask[]>([]);
+  const [isReordering, setIsReordering] = useState(false);
   const [, startTransition] = useTransition();
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const orderedImages = order
     .map((id) => images.find((image) => image.id === id))
@@ -86,21 +102,36 @@ export function ImageManager({ vehicleId, images, coverImage }: ImageManagerProp
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    if (isReordering) return;
+
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setOrder((current) => {
-      const oldIndex = current.indexOf(String(active.id));
-      const newIndex = current.indexOf(String(over.id));
-      const next = arrayMove(current, oldIndex, newIndex);
+    const previous = displayImages.map((image) => image.id);
+    const oldIndex = previous.indexOf(String(active.id));
+    const newIndex = previous.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
 
-      startTransition(async () => {
+    const next = arrayMove(previous, oldIndex, newIndex);
+    setOrder(next);
+    setIsReordering(true);
+
+    startTransition(async () => {
+      try {
         const result = await reorderVehicleImages(vehicleId, next);
-        if (!result.success) toast.error(result.error);
-        else router.refresh();
-      });
+        if (!result.success) {
+          setOrder(previous);
+          toast.error(result.error);
+          return;
+        }
 
-      return next;
+        router.refresh();
+      } catch (error) {
+        setOrder(previous);
+        toast.error(error instanceof Error ? error.message : "Falha ao reordenar as fotos.");
+      } finally {
+        setIsReordering(false);
+      }
     });
   }
 
@@ -132,7 +163,11 @@ export function ImageManager({ vehicleId, images, coverImage }: ImageManagerProp
       </label>
 
       {tasks.length > 0 ? (
-        <ul className="flex flex-col gap-1 text-sm">
+        <ul
+          className="flex flex-col gap-1 text-sm"
+          aria-label="Progresso do envio das fotos"
+          aria-live="polite"
+        >
           {tasks.map((task) => (
             <li key={task.id} className="text-fg-muted flex items-center gap-2">
               <span className="truncate">{task.name}</span>
@@ -151,19 +186,26 @@ export function ImageManager({ vehicleId, images, coverImage }: ImageManagerProp
         <p className="text-fg-muted text-sm">Nenhuma foto ainda.</p>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={order} strategy={horizontalListSortingStrategy}>
+          <SortableContext
+            items={displayImages.map((image) => image.id)}
+            strategy={horizontalListSortingStrategy}
+          >
             <ul className="flex flex-wrap gap-4">
               {displayImages.map((image) => (
                 <ImageThumb
                   key={image.id}
                   image={image}
                   isCover={image.url === coverImage}
+                  isReordering={isReordering}
                   onSetCover={() => handleSetCover(image)}
                   onDelete={deleteVehicleImage.bind(null, vehicleId, image.id, image.storagePath)}
                 />
               ))}
             </ul>
           </SortableContext>
+          <p className="sr-only" aria-live="polite">
+            {isReordering ? "Salvando nova ordem das fotos" : ""}
+          </p>
         </DndContext>
       )}
     </div>

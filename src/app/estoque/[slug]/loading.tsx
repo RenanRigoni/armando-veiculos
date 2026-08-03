@@ -7,7 +7,7 @@ export default function VehicleLoading() {
   return (
     <>
       <Header />
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Section className="py-8 md:py-10">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
             <Skeleton className="aspect-[3/2] w-full" />

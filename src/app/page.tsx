@@ -36,7 +36,7 @@ export default async function HomePage() {
     <>
       <Header />
 
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Hero />
 
         <Section tone="surface" className="py-10 md:py-12">
@@ -45,7 +45,15 @@ export default async function HomePage() {
           </div>
         </Section>
 
-        <Section>
+        <Section aria-labelledby="category-heading">
+          <div className="brand-rule mb-8 max-w-2xl">
+            <h2 id="category-heading" className="text-3xl leading-none sm:text-4xl">
+              Encontre por categoria
+            </h2>
+            <p className="text-fg-muted mt-3">
+              Explore o estoque disponível de carros, motos e náutica.
+            </p>
+          </div>
           <CategoryCards categories={categories} />
         </Section>
 

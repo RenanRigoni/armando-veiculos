@@ -34,7 +34,7 @@ function StatusAction({
 }) {
   return (
     <form action={setVehicleStatus.bind(null, vehicleId, status)}>
-      <button type="submit" className="text-fg-muted hover:text-brand text-xs whitespace-nowrap">
+      <button type="submit" className="text-fg-muted hover:text-brand-text min-h-11 text-xs whitespace-nowrap">
         {label}
       </button>
     </form>
@@ -80,12 +80,19 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
   const title =
     vehicle.title ?? ([vehicle.make, vehicle.model].filter(Boolean).join(" ") || "(sem título)");
   const years = formatYearPair(vehicle.yearManufacture, vehicle.yearModel);
+  const price = formatBRL(vehicle.price);
 
   return (
     <tr className="border-border border-b last:border-0">
       <td className="px-4 py-3">
-        <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-sm bg-black">
-          <Image src={vehicle.coverImage} alt={title} fill sizes="64px" className="object-cover" />
+        <div className="bg-surface-2 relative h-12 w-16 shrink-0 overflow-hidden rounded-sm">
+          <Image
+            src={vehicle.coverImage}
+            alt={`Foto de ${title}`}
+            fill
+            sizes="64px"
+            className="object-cover"
+          />
         </div>
       </td>
       <td className="px-4 py-3">
@@ -93,7 +100,9 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
         {years ? <p className="text-fg-muted text-xs">{years}</p> : null}
       </td>
       <td className="text-fg-muted px-4 py-3 text-sm">{CATEGORY_LABELS[vehicle.category]}</td>
-      <td className="px-4 py-3 text-sm">{formatBRL(vehicle.price) ?? "—"}</td>
+      <td className="px-4 py-3 text-sm">
+        {price ?? <span className="sr-only">Preço não informado</span>}
+      </td>
       <td className="px-4 py-3">
         <StatusBadge status={vehicle.status} />
       </td>
@@ -103,6 +112,7 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
             type="submit"
             aria-label={vehicle.featured ? "Remover destaque" : "Marcar como destaque"}
             aria-pressed={vehicle.featured}
+            className="flex size-11 items-center justify-center"
           >
             <Star
               size={18}
@@ -119,7 +129,7 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <Link
             href={`/admin/veiculos/${vehicle.id}/editar`}
-            className="text-fg-muted hover:text-brand flex items-center gap-1 text-sm"
+            className="text-fg-muted hover:text-brand-text flex min-h-11 items-center gap-1 text-sm"
           >
             <Pencil size={14} aria-hidden />
             Editar
@@ -129,7 +139,7 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
               href={`/estoque/${vehicle.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-fg-muted hover:text-brand flex items-center gap-1 text-sm"
+              className="text-fg-muted hover:text-brand-text flex min-h-11 items-center gap-1 text-sm"
             >
               <ExternalLink size={14} aria-hidden />
               Ver no site

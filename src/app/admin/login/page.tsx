@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 
 export default function AdminLoginPage() {
   return (
-    <div className="bg-ink flex min-h-screen items-center justify-center px-4">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="bg-ink flex min-h-dvh items-center justify-center px-4"
+    >
       <div className="border-border bg-surface w-full max-w-sm rounded-md border p-8">
         <div className="flex justify-center">
           <Image
@@ -27,6 +31,6 @@ export default function AdminLoginPage() {
           <LoginForm />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

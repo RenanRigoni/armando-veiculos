@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { messages, whatsappLinks } from "@/lib/whatsapp";
+import { cn } from "@/lib/utils";
 
 type Service = {
   icon: LucideIcon;
@@ -44,11 +45,17 @@ export function ServicesGrid() {
         title="Serviços"
         description="Compra, venda, consignação e financiamento em um só lugar."
       />
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {services.map((service) => (
+      <div className="border-border grid grid-cols-1 border-y sm:grid-cols-3">
+        {services.map((service, index) => (
           <div
             key={service.title}
-            className="border-border bg-surface flex flex-col gap-4 rounded-md border p-6"
+            className={cn(
+              "border-border flex flex-col gap-4 py-7",
+              index < services.length - 1 && "border-b",
+              "sm:border-b-0 sm:px-7",
+              index > 0 && "sm:border-l",
+              index === 0 && "sm:pr-7",
+            )}
           >
             <service.icon size={28} className="text-brand" aria-hidden />
             <h3 className="text-xl">{service.title}</h3>

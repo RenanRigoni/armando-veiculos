@@ -89,7 +89,7 @@ export default async function AdminVehiclesPage({
         </Select>
         <button
           type="submit"
-          className="bg-brand hover:bg-brand-bright h-10 rounded-sm px-4 text-sm text-white"
+          className="touch-target bg-brand text-fg hover:bg-brand-dark h-10 cursor-pointer rounded-sm px-4 text-sm"
         >
           Filtrar
         </button>
@@ -112,7 +112,12 @@ export default async function AdminVehiclesPage({
               <Link
                 key={pageNumber}
                 href={href}
-                className={pageNumber === page ? "text-brand text-sm" : "text-fg-muted text-sm"}
+                aria-current={pageNumber === page ? "page" : undefined}
+                className={
+                  pageNumber === page
+                    ? "touch-target text-brand-text inline-flex items-center px-2 text-sm"
+                    : "touch-target text-fg-muted hover:text-fg inline-flex items-center px-2 text-sm"
+                }
               >
                 {pageNumber}
               </Link>

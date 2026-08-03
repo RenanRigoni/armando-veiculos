@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import type { Resolver } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import type { FieldPath, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
@@ -13,7 +13,11 @@ import { CategoryFields } from "@/components/admin/CategoryFields";
 import { createVehicleDraft, publishVehicle, saveVehicleDraft } from "@/data/vehicles.admin";
 import type { PublishStatus } from "@/data/vehicles.admin";
 import { buildVehicleSlug } from "@/lib/slug";
-import { vehicleDraftSchema, type VehicleDraftSchema } from "@/schemas/vehicle";
+import {
+  vehicleDraftSchema,
+  vehiclePublishSchema,
+  type VehicleDraftSchema,
+} from "@/schemas/vehicle";
 import { CATEGORY_LABELS } from "@/types/vehicle";
 import type { AdminVehicle, VehicleCategory } from "@/types/vehicle";
 
@@ -68,9 +72,12 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     getValues,
+    setError,
+    setFocus,
+    clearErrors,
     formState: { errors, isDirty },
   } = useForm<VehicleDraftSchema>({
     // `@hookform/resolvers` e `react-hook-form` divergem no shape genérico do
@@ -79,7 +86,7 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
     defaultValues: buildDefaultValues(vehicle),
   });
 
-  const category = watch("category");
+  const category = useWatch({ control, name: "category" }) ?? "carros";
 
   useEffect(() => {
     function handleBeforeUnload(event: BeforeUnloadEvent) {
@@ -117,6 +124,29 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
 
   function onPublish(values: VehicleDraftSchema) {
     if (!vehicle) return;
+
+    const parsed = vehiclePublishSchema.omit({ images: true }).safeParse(values);
+    if (!parsed.success) {
+      clearErrors();
+      const fieldIssues = parsed.error.issues.filter(
+        (issue) => typeof issue.path[0] === "string",
+      );
+
+      fieldIssues.forEach((issue) => {
+        setError(issue.path[0] as FieldPath<VehicleDraftSchema>, {
+          type: "manual",
+          message: issue.message,
+        });
+      });
+
+      const firstField = fieldIssues[0]?.path[0];
+      if (typeof firstField === "string") {
+        setFocus(firstField as FieldPath<VehicleDraftSchema>);
+      }
+      toast.error("Revise os campos obrigatórios destacados.");
+      return;
+    }
+
     const payload = { ...values, features: parseFeatures(featuresText) };
     startTransition(async () => {
       const result = await publishVehicle(vehicle.id, payload, statusChoice);
@@ -144,11 +174,23 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
         </div>
         <div>
           <Label htmlFor="make">Marca</Label>
-          <Input id="make" {...register("make")} />
+          <Input
+            id="make"
+            aria-invalid={Boolean(errors.make)}
+            aria-describedby={errors.make ? "make-error" : undefined}
+            {...register("make")}
+          />
+          <FieldError id="make-error">{errors.make?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="model">Modelo</Label>
-          <Input id="model" {...register("model")} />
+          <Input
+            id="model"
+            aria-invalid={Boolean(errors.model)}
+            aria-describedby={errors.model ? "model-error" : undefined}
+            {...register("model")}
+          />
+          <FieldError id="model-error">{errors.model?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="version">Versão</Label>
@@ -156,28 +198,57 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
         </div>
         <div className="sm:col-span-2 lg:col-span-1">
           <Label htmlFor="title">Título de exibição</Label>
-          <Input id="title" {...register("title")} />
-          <FieldError>{errors.title?.message}</FieldError>
+          <Input
+            id="title"
+            aria-invalid={Boolean(errors.title)}
+            aria-describedby={errors.title ? "title-error" : undefined}
+            {...register("title")}
+          />
+          <FieldError id="title-error">{errors.title?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="slug">Slug</Label>
           <div className="flex gap-2">
-            <Input id="slug" {...register("slug")} />
+            <Input
+              id="slug"
+              aria-invalid={Boolean(errors.slug)}
+              aria-describedby={errors.slug ? "slug-error" : undefined}
+              {...register("slug")}
+            />
             <Button type="button" variant="secondary" size="md" onClick={handleGenerateSlug}>
               Gerar
             </Button>
           </div>
+          <FieldError id="slug-error">{errors.slug?.message}</FieldError>
         </div>
       </section>
 
       <section className="border-border bg-surface grid grid-cols-1 gap-4 rounded-md border p-6 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <Label htmlFor="yearManufacture">Ano de fabricação</Label>
-          <Input id="yearManufacture" type="number" inputMode="numeric" {...register("yearManufacture")} />
+          <Input
+            id="yearManufacture"
+            type="number"
+            inputMode="numeric"
+            aria-invalid={Boolean(errors.yearManufacture)}
+            aria-describedby={errors.yearManufacture ? "year-manufacture-error" : undefined}
+            {...register("yearManufacture")}
+          />
+          <FieldError id="year-manufacture-error">
+            {errors.yearManufacture?.message}
+          </FieldError>
         </div>
         <div>
           <Label htmlFor="yearModel">Ano do modelo</Label>
-          <Input id="yearModel" type="number" inputMode="numeric" {...register("yearModel")} />
+          <Input
+            id="yearModel"
+            type="number"
+            inputMode="numeric"
+            aria-invalid={Boolean(errors.yearModel)}
+            aria-describedby={errors.yearModel ? "year-model-error" : undefined}
+            {...register("yearModel")}
+          />
+          <FieldError id="year-model-error">{errors.yearModel?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="color">Cor</Label>
@@ -193,8 +264,15 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
       <section className="border-border bg-surface grid grid-cols-1 gap-4 rounded-md border p-6 sm:grid-cols-3">
         <div>
           <Label htmlFor="price">Preço</Label>
-          <Input id="price" type="number" inputMode="numeric" {...register("price")} />
-          <FieldError>{errors.price?.message}</FieldError>
+          <Input
+            id="price"
+            type="number"
+            inputMode="numeric"
+            aria-invalid={Boolean(errors.price)}
+            aria-describedby={errors.price ? "price-error" : undefined}
+            {...register("price")}
+          />
+          <FieldError id="price-error">{errors.price?.message}</FieldError>
         </div>
         <div>
           <Label htmlFor="previousPrice">Preço anterior (opcional)</Label>
@@ -228,7 +306,7 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
           <Label htmlFor="internalNotes">Observações internas (nunca aparecem no site)</Label>
           <Textarea id="internalNotes" rows={3} defaultValue={vehicle.internalNotes ?? ""} disabled />
           <p className="text-fg-muted text-xs">
-            Edição de observações internas entra numa próxima fase — hoje é só leitura.
+            Edição de observações internas entra numa próxima fase. Hoje é só leitura.
           </p>
         </section>
       ) : null}

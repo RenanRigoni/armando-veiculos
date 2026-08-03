@@ -3,8 +3,8 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 import { cn } from "@/lib/utils";
 
 const control =
-  "h-11 w-full rounded-sm border border-border bg-surface-2 px-3 text-base text-fg " +
-  "placeholder:text-fg-muted/70 focus:border-brand focus:outline-none " +
+  "h-11 w-full rounded-sm border border-border-strong bg-surface-2 px-3 text-base text-fg " +
+  "placeholder:text-fg-muted focus:border-brand " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 
 type LabelProps = {
@@ -24,9 +24,13 @@ export function Label({ htmlFor, children, className }: LabelProps) {
   );
 }
 
-export function FieldError({ children }: { children?: ReactNode }) {
+export function FieldError({ id, children }: { id?: string; children?: ReactNode }) {
   if (!children) return null;
-  return <p className="text-brand mt-1.5 text-sm">{children}</p>;
+  return (
+    <p id={id} role="alert" className="text-brand-text mt-1.5 text-sm">
+      {children}
+    </p>
+  );
 }
 
 export function Input({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {

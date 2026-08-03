@@ -38,8 +38,14 @@ export function TradeInForm({ vehicle }: TradeInFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
         <Label htmlFor={`${idPrefix}-name`}>Nome</Label>
-        <Input id={`${idPrefix}-name`} autoComplete="name" {...register("name")} />
-        <FieldError>{errors.name?.message}</FieldError>
+        <Input
+          id={`${idPrefix}-name`}
+          autoComplete="name"
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? `${idPrefix}-name-error` : undefined}
+          {...register("name")}
+        />
+        <FieldError id={`${idPrefix}-name-error`}>{errors.name?.message}</FieldError>
       </div>
 
       <div>
@@ -49,25 +55,46 @@ export function TradeInForm({ vehicle }: TradeInFormProps) {
           inputMode="tel"
           autoComplete="tel"
           placeholder="(18) 90000-0000"
+          aria-invalid={Boolean(errors.whatsapp)}
+          aria-describedby={errors.whatsapp ? `${idPrefix}-whatsapp-error` : undefined}
           {...register("whatsapp")}
         />
-        <FieldError>{errors.whatsapp?.message}</FieldError>
+        <FieldError id={`${idPrefix}-whatsapp-error`}>{errors.whatsapp?.message}</FieldError>
       </div>
 
       <div>
         <Label htmlFor={`${idPrefix}-make`}>Marca</Label>
-        <Input id={`${idPrefix}-make`} {...register("make")} />
+        <Input
+          id={`${idPrefix}-make`}
+          aria-invalid={Boolean(errors.make)}
+          aria-describedby={errors.make ? `${idPrefix}-make-error` : undefined}
+          {...register("make")}
+        />
+        <FieldError id={`${idPrefix}-make-error`}>{errors.make?.message}</FieldError>
       </div>
 
       <div>
         <Label htmlFor={`${idPrefix}-model`}>Modelo</Label>
-        <Input id={`${idPrefix}-model`} {...register("model")} />
+        <Input
+          id={`${idPrefix}-model`}
+          aria-invalid={Boolean(errors.model)}
+          aria-describedby={errors.model ? `${idPrefix}-model-error` : undefined}
+          {...register("model")}
+        />
+        <FieldError id={`${idPrefix}-model-error`}>{errors.model?.message}</FieldError>
       </div>
 
       <div>
         <Label htmlFor={`${idPrefix}-year`}>Ano</Label>
-        <Input id={`${idPrefix}-year`} inputMode="numeric" placeholder="2020" {...register("year")} />
-        <FieldError>{errors.year?.message}</FieldError>
+        <Input
+          id={`${idPrefix}-year`}
+          inputMode="numeric"
+          placeholder="2020"
+          aria-invalid={Boolean(errors.year)}
+          aria-describedby={errors.year ? `${idPrefix}-year-error` : undefined}
+          {...register("year")}
+        />
+        <FieldError id={`${idPrefix}-year-error`}>{errors.year?.message}</FieldError>
       </div>
 
       <div>

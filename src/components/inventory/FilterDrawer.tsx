@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 
 import { SearchFilters } from "@/components/inventory/SearchFilters";
+import { useDialogFocus } from "@/hooks/useDialogFocus";
 import type { InventoryFacets, VehicleFilters } from "@/types/vehicle";
 
 type FilterDrawerProps = {
@@ -14,38 +15,54 @@ type FilterDrawerProps = {
 /**
  * Envolve o SearchFilters num painel mobile. Precisa renderizar o form aqui
  * dentro (em vez de recebê-lo por `children`) porque o callback que fecha o
- * drawer só pode existir no lado do cliente — Server Component não consegue
+ * drawer só pode existir no lado do cliente. Server Component não consegue
  * passar função para preencher `onApplied`.
  */
 export function FilterDrawer({ facets, initialValues }: FilterDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+  const dialogTitleId = useId();
+  const dialogId = useId();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useDialogFocus({
+    isOpen,
+    onClose: () => setIsOpen(false),
+    initialFocusRef: closeButtonRef,
+    closeOnMediaQuery: "(min-width: 64rem)",
+  });
 
   return (
     <div className="lg:hidden">
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="border-border bg-surface font-display flex h-11 w-full items-center justify-center gap-2 rounded-sm border text-sm tracking-wide uppercase"
+        className="border-border-strong bg-surface font-display flex h-11 w-full items-center justify-center gap-2 rounded-sm border text-sm tracking-wide uppercase"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        aria-controls={dialogId}
       >
         <SlidersHorizontal size={16} aria-hidden />
         Filtros
       </button>
 
       {isOpen ? (
-        <div className="bg-ink fixed inset-0 z-50 flex flex-col overflow-y-auto">
+        <div
+          ref={dialogRef}
+          id={dialogId}
+          className="bg-ink fixed inset-0 z-50 flex flex-col overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={dialogTitleId}
+          tabIndex={-1}
+        >
           <div className="border-border sticky top-0 flex h-16 items-center justify-between border-b px-4">
-            <span className="font-display text-lg tracking-wide uppercase">Filtros</span>
+            <span id={dialogTitleId} className="font-display text-lg tracking-wide uppercase">
+              Filtros
+            </span>
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={() => setIsOpen(false)}
-              className="text-fg hover:text-brand p-2"
+              className="text-fg hover:text-brand-text inline-flex size-11 items-center justify-center"
               aria-label="Fechar filtros"
             >
               <X size={24} aria-hidden />

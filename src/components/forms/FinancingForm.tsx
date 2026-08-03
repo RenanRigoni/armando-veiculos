@@ -41,8 +41,14 @@ export function FinancingForm({ vehicle }: FinancingFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
         <Label htmlFor={`${idPrefix}-name`}>Nome</Label>
-        <Input id={`${idPrefix}-name`} autoComplete="name" {...register("name")} />
-        <FieldError>{errors.name?.message}</FieldError>
+        <Input
+          id={`${idPrefix}-name`}
+          autoComplete="name"
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? `${idPrefix}-name-error` : undefined}
+          {...register("name")}
+        />
+        <FieldError id={`${idPrefix}-name-error`}>{errors.name?.message}</FieldError>
       </div>
 
       <div>
@@ -52,9 +58,11 @@ export function FinancingForm({ vehicle }: FinancingFormProps) {
           inputMode="tel"
           autoComplete="tel"
           placeholder="(18) 90000-0000"
+          aria-invalid={Boolean(errors.whatsapp)}
+          aria-describedby={errors.whatsapp ? `${idPrefix}-whatsapp-error` : undefined}
           {...register("whatsapp")}
         />
-        <FieldError>{errors.whatsapp?.message}</FieldError>
+        <FieldError id={`${idPrefix}-whatsapp-error`}>{errors.whatsapp?.message}</FieldError>
       </div>
 
       <div>

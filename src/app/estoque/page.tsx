@@ -40,7 +40,7 @@ export default async function EstoquePage({
     <>
       <Header />
 
-      <main className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1">
         <Section tone="surface" className="py-8 md:py-10">
           <div className="hidden lg:block">
             <SearchFilters key={filtersKey} facets={facets} initialValues={filters} />
@@ -50,11 +50,16 @@ export default async function EstoquePage({
 
         <Section>
           <SectionHeading
+            level={1}
             title={filters.category ? CATEGORY_LABELS[filters.category] : "Estoque"}
             description={`${total} ${total === 1 ? "veículo encontrado" : "veículos encontrados"}`}
           />
 
-          {items.length > 0 ? <VehicleGrid vehicles={items} /> : <EmptyState />}
+          {items.length > 0 ? (
+            <VehicleGrid vehicles={items} headingLevel={2} />
+          ) : (
+            <EmptyState headingLevel={2} />
+          )}
 
           {totalPages > 1 ? (
             <nav aria-label="Paginação" className="mt-10 flex flex-wrap items-center justify-center gap-2">
@@ -69,6 +74,7 @@ export default async function EstoquePage({
                     href={href}
                     variant={pageNumber === page ? "primary" : "secondary"}
                     size="sm"
+                    aria-current={pageNumber === page ? "page" : undefined}
                   >
                     {pageNumber}
                   </ButtonLink>

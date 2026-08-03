@@ -36,32 +36,32 @@ export function Gallery({ images, title }: GalleryProps) {
   return (
     <div>
       <div
-        className="border-border relative aspect-[3/2] w-full cursor-zoom-in overflow-hidden rounded-md border bg-black"
-        onClick={() => setIsLightboxOpen(true)}
+        className="border-border bg-ink relative aspect-[3/2] w-full overflow-hidden rounded-md border"
         onTouchStart={swipeHandlers.onTouchStart}
         onTouchEnd={swipeHandlers.onTouchEnd}
-        role="button"
-        tabIndex={0}
-        aria-label="Abrir galeria em tela cheia"
-        onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === " ") setIsLightboxOpen(true);
-        }}
       >
-        <Image
-          key={current.id}
-          src={current.url}
-          alt={current.alt ?? title}
-          fill
-          sizes="(min-width: 1024px) 55vw, 100vw"
-          priority
-          className="object-cover"
-        />
+        <button
+          type="button"
+          onClick={() => setIsLightboxOpen(true)}
+          className="absolute inset-0 cursor-zoom-in"
+          aria-label="Abrir galeria em tela cheia"
+        >
+          <Image
+            key={current.id}
+            src={current.url}
+            alt={current.alt ?? title}
+            fill
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            priority
+            className="object-cover"
+          />
 
-        {total > 1 ? (
-          <p className="bg-ink/80 absolute right-3 bottom-3 rounded-sm px-2 py-1 text-xs">
-            {index + 1} / {total}
-          </p>
-        ) : null}
+          {total > 1 ? (
+            <span className="bg-ink/80 absolute right-3 bottom-3 rounded-sm px-2 py-1 text-xs">
+              {index + 1} / {total}
+            </span>
+          ) : null}
+        </button>
 
         {total > 1 ? (
           <>
@@ -71,7 +71,7 @@ export function Gallery({ images, title }: GalleryProps) {
                 event.stopPropagation();
                 goPrev();
               }}
-              className="bg-ink/60 hover:bg-brand absolute top-1/2 left-2 -translate-y-1/2 rounded-full p-1.5 text-white"
+              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
               aria-label="Foto anterior"
             >
               <ChevronLeft size={22} aria-hidden />
@@ -82,7 +82,7 @@ export function Gallery({ images, title }: GalleryProps) {
                 event.stopPropagation();
                 goNext();
               }}
-              className="bg-ink/60 hover:bg-brand absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1.5 text-white"
+              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
               aria-label="Próxima foto"
             >
               <ChevronRight size={22} aria-hidden />

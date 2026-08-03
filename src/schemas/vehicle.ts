@@ -15,8 +15,18 @@ const draftFields = {
   model: z.string().trim().min(1).optional(),
   version: z.string().trim().optional(),
   title: z.string().trim().min(1).optional(),
-  yearManufacture: z.coerce.number().int().min(1900).max(2100).optional(),
-  yearModel: z.coerce.number().int().min(1900).max(2100).optional(),
+  yearManufacture: z.coerce
+    .number()
+    .int("Informe um ano inteiro.")
+    .min(1900, "O ano deve ser igual ou posterior a 1900.")
+    .max(2100, "O ano deve ser igual ou anterior a 2100.")
+    .optional(),
+  yearModel: z.coerce
+    .number()
+    .int("Informe um ano inteiro.")
+    .min(1900, "O ano deve ser igual ou posterior a 1900.")
+    .max(2100, "O ano deve ser igual ou anterior a 2100.")
+    .optional(),
   price: z.coerce.number().positive().optional(),
   previousPrice: z.coerce.number().positive().optional(),
   mileage: z.coerce.number().int().nonnegative().optional(),

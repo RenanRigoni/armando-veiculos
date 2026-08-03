@@ -7,7 +7,14 @@ import { buildQuickSpecs, statusBadge } from "@/lib/vehicleSpecs";
 import { CATEGORY_LABELS } from "@/types/vehicle";
 import type { Vehicle } from "@/types/vehicle";
 
-export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+export function VehicleCard({
+  vehicle,
+  headingLevel = 3,
+}: {
+  vehicle: Vehicle;
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   const badge = statusBadge(vehicle);
   const specs = buildQuickSpecs(vehicle);
   const years = formatYearPair(vehicle.yearManufacture, vehicle.yearModel);
@@ -19,7 +26,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
   return (
     <article className="border-border bg-surface group flex flex-col overflow-hidden rounded-md border">
-      <div className="relative aspect-[3/2] w-full overflow-hidden bg-black">
+      <div className="bg-ink relative aspect-[3/2] w-full overflow-hidden">
         <Image
           src={vehicle.coverImage}
           alt={vehicle.title}
@@ -37,10 +44,10 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 className="text-lg leading-tight normal-case">
+          <Heading className="text-lg leading-tight normal-case">
             {vehicle.make} {vehicle.model}
             {vehicle.version ? ` ${vehicle.version}` : ""}
-          </h3>
+          </Heading>
           {years ? <p className="text-fg-muted mt-1 text-sm">{years}</p> : null}
         </div>
 

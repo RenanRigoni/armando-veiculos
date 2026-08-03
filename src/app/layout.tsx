@@ -53,6 +53,12 @@ export default function RootLayout({
       className={`${barlowCondensed.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="bg-ink text-fg flex min-h-full flex-col">
+        <a
+          href="#main-content"
+          className="bg-brand-dark text-fg fixed top-3 left-3 z-[100] -translate-y-24 rounded-sm px-4 py-3 font-semibold transition-transform focus:translate-y-0"
+        >
+          Pular para o conteúdo
+        </a>
         {children}
         <Toaster
           position="top-center"

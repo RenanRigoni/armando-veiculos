@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useId, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
+import { useDialogFocus } from "@/hooks/useDialogFocus";
 import { useSwipe } from "@/hooks/useSwipe";
 import type { VehicleImage } from "@/types/vehicle";
 
@@ -18,60 +19,70 @@ type LightboxProps = {
 export function Lightbox({ images, index, title, onIndexChange, onClose }: LightboxProps) {
   const total = images.length;
   const current = images[index];
+  const dialogTitleId = useId();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  function goNext() {
+  const goNext = useCallback(() => {
     onIndexChange((index + 1) % total);
-  }
+  }, [index, onIndexChange, total]);
 
-  function goPrev() {
+  const goPrev = useCallback(() => {
     onIndexChange((index - 1 + total) % total);
-  }
+  }, [index, onIndexChange, total]);
 
   const swipeHandlers = useSwipe(goNext, goPrev);
+  const dialogRef = useDialogFocus({
+    isOpen: Boolean(current),
+    onClose,
+    initialFocusRef: closeButtonRef,
+  });
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
       if (event.key === "ArrowRight" && total > 1) goNext();
       if (event.key === "ArrowLeft" && total > 1) goPrev();
     }
 
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- goNext/goPrev recriados por render, mas só o índice importa
-  }, [index, onClose, total]);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [goNext, goPrev, total]);
 
   if (!current) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex flex-col bg-black/95"
+      ref={dialogRef}
+      className="bg-ink/95 fixed inset-0 z-[60] flex flex-col"
       role="dialog"
       aria-modal="true"
-      aria-label={`Galeria — ${title}`}
+      aria-labelledby={dialogTitleId}
+      tabIndex={-1}
     >
       <div className="flex items-center justify-between p-4">
+        <h2 id={dialogTitleId} className="sr-only">
+          Galeria de fotos: {title}
+        </h2>
         {total > 1 ? (
-          <p className="text-fg-muted text-sm">
+          <p className="text-fg-muted text-sm" aria-hidden>
             {index + 1} / {total}
           </p>
         ) : (
           <span />
         )}
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          className="text-fg hover:text-brand p-2"
+          className="text-fg hover:text-brand-text inline-flex size-11 items-center justify-center"
           aria-label="Fechar galeria"
         >
           <X size={28} aria-hidden />
         </button>
       </div>
+
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        Foto {index + 1} de {total}: {current.alt ?? title}
+      </p>
 
       <div
         className="relative flex-1 px-4 pb-4"
@@ -92,7 +103,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
             <button
               type="button"
               onClick={goPrev}
-              className="bg-ink/60 hover:bg-brand absolute top-1/2 left-2 -translate-y-1/2 rounded-full p-2 text-white sm:left-6"
+              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:left-6"
               aria-label="Foto anterior"
             >
               <ChevronLeft size={28} aria-hidden />
@@ -100,7 +111,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
             <button
               type="button"
               onClick={goNext}
-              className="bg-ink/60 hover:bg-brand absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-2 text-white sm:right-6"
+              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:right-6"
               aria-label="Próxima foto"
             >
               <ChevronRight size={28} aria-hidden />

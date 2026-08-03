@@ -110,21 +110,24 @@ export default async function VehiclePage({ params }: VehiclePageProps) {
     <>
       <Header />
 
-      <main className="flex-1 pb-24 lg:pb-0">
+      <main id="main-content" tabIndex={-1} className="flex-1 pb-24 lg:pb-0">
         <div className="border-border bg-surface border-b">
           <nav
             aria-label="Breadcrumb"
             className="text-fg-muted mx-auto flex max-w-7xl flex-wrap items-center gap-1.5 px-4 py-3 text-sm sm:px-6"
           >
-            <Link href="/" className="hover:text-brand">
+            <Link href="/" className="hover:text-brand-text">
               Início
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link href="/estoque" className="hover:text-brand">
+            <Link href="/estoque" className="hover:text-brand-text">
               Estoque
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link href={`/estoque?categoria=${vehicle.category}`} className="hover:text-brand">
+            <Link
+              href={`/estoque?categoria=${vehicle.category}`}
+              className="hover:text-brand-text"
+            >
               {CATEGORY_LABELS[vehicle.category]}
             </Link>
             <ChevronRight size={14} aria-hidden />
