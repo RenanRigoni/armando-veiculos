@@ -37,6 +37,30 @@ function requiredNumber(schema: z.ZodNumber) {
   );
 }
 
+const groupedWholeNumberPattern = /^-?\d{1,3}(?:\.\d{3})+$/;
+const plainWholeNumberPattern = /^-?\d+$/;
+
+function normalizeWholeNumber(value: unknown): unknown {
+  if (typeof value === "number") return Number.isNaN(value) ? undefined : value;
+  if (typeof value !== "string") return value;
+
+  const normalized = value.trim();
+  if (!normalized) return undefined;
+  if (plainWholeNumberPattern.test(normalized)) return Number(normalized);
+  if (groupedWholeNumberPattern.test(normalized)) {
+    return Number(normalized.replaceAll(".", ""));
+  }
+  return value;
+}
+
+function optionalWholeNumber(schema: z.ZodNumber) {
+  return z.preprocess(normalizeWholeNumber, schema.optional());
+}
+
+function requiredWholeNumber(schema: z.ZodNumber) {
+  return z.preprocess(normalizeWholeNumber, schema);
+}
+
 const draftFields = {
   category: categorySchema,
   slug: optionalNonEmptyString,
@@ -58,9 +82,22 @@ const draftFields = {
       .min(1900, "O ano deve ser igual ou posterior a 1900.")
       .max(2100, "O ano deve ser igual ou anterior a 2100."),
   ),
-  price: optionalNumber(z.number().positive()),
-  previousPrice: optionalNumber(z.number().positive()),
-  mileage: optionalNumber(z.number().int().nonnegative()),
+  price: optionalWholeNumber(
+    z
+      .number({ error: "Informe o preço em números, com ou sem pontos." })
+      .positive("Informe o preço."),
+  ),
+  previousPrice: optionalWholeNumber(
+    z
+      .number({ error: "Informe o preço anterior em números, com ou sem pontos." })
+      .positive("Informe um preço anterior válido."),
+  ),
+  mileage: optionalWholeNumber(
+    z
+      .number({ error: "Informe a quilometragem em números, com ou sem pontos." })
+      .int("Informe uma quilometragem inteira.")
+      .nonnegative("A quilometragem não pode ser negativa."),
+  ),
   engineHours: optionalNumber(z.number().int().nonnegative()),
   transmission: z.string().trim().optional(),
   fuel: z.string().trim().optional(),
@@ -103,7 +140,7 @@ export const vehiclePublishSchema = z.object({
       .min(1900, "O ano deve ser igual ou posterior a 1900.")
       .max(2100, "O ano deve ser igual ou anterior a 2100."),
   ),
-  price: requiredNumber(
+  price: requiredWholeNumber(
     z.number({ error: "Informe o preço." }).positive("Informe o preço."),
   ),
   images: z.array(z.string()).min(1, "Adicione ao menos uma foto."),

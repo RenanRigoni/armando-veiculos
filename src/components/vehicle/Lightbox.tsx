@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
+import { IntrinsicVehicleImage } from "@/components/vehicle/IntrinsicVehicleImage";
 import { useDialogFocus } from "@/hooks/useDialogFocus";
 import { useSwipe } from "@/hooks/useSwipe";
 import type { VehicleImage } from "@/types/vehicle";
@@ -85,17 +85,15 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
       </p>
 
       <div
-        className="relative flex-1 px-4 pb-4"
+        className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-4"
         onTouchStart={swipeHandlers.onTouchStart}
         onTouchEnd={swipeHandlers.onTouchEnd}
       >
-        <Image
+        <IntrinsicVehicleImage
           src={current.url}
           alt={current.alt ?? title}
-          fill
-          sizes="100vw"
-          className="object-contain"
-          priority
+          eager
+          className="max-h-[calc(95svh-4rem)] max-w-[95vw]"
         />
 
         {total > 1 ? (

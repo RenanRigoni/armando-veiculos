@@ -258,7 +258,11 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
           <Label htmlFor="condition">Condição</Label>
           <Input id="condition" placeholder="Seminovo" {...register("condition")} />
         </div>
-        <CategoryFields category={category} register={register} />
+        <CategoryFields
+          category={category}
+          register={register}
+          mileageError={errors.mileage?.message}
+        />
       </section>
 
       <section className="border-border bg-surface grid grid-cols-1 gap-4 rounded-md border p-6 sm:grid-cols-3">
@@ -266,8 +270,9 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
           <Label htmlFor="price">Preço</Label>
           <Input
             id="price"
-            type="number"
+            type="text"
             inputMode="numeric"
+            placeholder="Ex.: 69900 ou 69.900"
             aria-invalid={Boolean(errors.price)}
             aria-describedby={errors.price ? "price-error" : undefined}
             {...register("price")}
@@ -278,8 +283,9 @@ export function VehicleForm({ vehicle }: { vehicle?: AdminVehicle }) {
           <Label htmlFor="previousPrice">Preço anterior (opcional)</Label>
           <Input
             id="previousPrice"
-            type="number"
+            type="text"
             inputMode="numeric"
+            placeholder="Ex.: 75000 ou 75.000"
             aria-invalid={Boolean(errors.previousPrice)}
             aria-describedby={errors.previousPrice ? "previous-price-error" : undefined}
             {...register("previousPrice")}

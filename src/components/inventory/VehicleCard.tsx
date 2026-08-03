@@ -25,14 +25,14 @@ export function VehicleCard({
       : null;
 
   return (
-    <article className="border-border bg-surface group flex flex-col overflow-hidden rounded-md border">
-      <div className="bg-ink relative aspect-[3/2] w-full overflow-hidden">
+    <article className="border-border bg-surface flex flex-col overflow-hidden rounded-md border">
+      <div className="bg-ink relative h-56 w-full overflow-hidden">
         <Image
           src={vehicle.coverImage}
           alt={vehicle.title}
           fill
           sizes="(min-width: 1280px) 23vw, (min-width: 768px) 45vw, 92vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-contain object-center"
         />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
           <Badge tone="muted" className="bg-ink/80 border-border/60">

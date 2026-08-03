@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { IntrinsicVehicleImage } from "@/components/vehicle/IntrinsicVehicleImage";
 import { Lightbox } from "@/components/vehicle/Lightbox";
 import { useSwipe } from "@/hooks/useSwipe";
 import { cn } from "@/lib/utils";
@@ -32,28 +33,26 @@ export function Gallery({ images, title }: GalleryProps) {
   const swipeHandlers = useSwipe(goNext, goPrev);
 
   if (!current) return null;
+  const currentDescription = current.alt?.trim() || title;
 
   return (
     <div>
       <div
-        className="border-border bg-ink relative aspect-[3/2] w-full overflow-hidden rounded-md border"
+        className="border-border bg-ink relative h-[clamp(18rem,55svh,36rem)] w-full overflow-hidden rounded-md border"
         onTouchStart={swipeHandlers.onTouchStart}
         onTouchEnd={swipeHandlers.onTouchEnd}
       >
         <button
           type="button"
           onClick={() => setIsLightboxOpen(true)}
-          className="absolute inset-0 cursor-zoom-in"
-          aria-label="Abrir galeria em tela cheia"
+          className="focus-visible:ring-fg focus-visible:outline-brand absolute inset-0 flex cursor-zoom-in items-center justify-center p-2 focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-2 focus-visible:outline-offset-[-5px]"
+          aria-label={`Abrir foto ${index + 1} de ${total}: ${currentDescription}, em tela cheia`}
         >
-          <Image
+          <IntrinsicVehicleImage
             key={current.id}
             src={current.url}
             alt={current.alt ?? title}
-            fill
-            sizes="(min-width: 1024px) 55vw, 100vw"
-            priority
-            className="object-cover"
+            eager
           />
 
           {total > 1 ? (
@@ -91,6 +90,12 @@ export function Gallery({ images, title }: GalleryProps) {
         ) : null}
       </div>
 
+      {!isLightboxOpen ? (
+        <p className="sr-only" aria-live="polite" aria-atomic="true">
+          Foto {index + 1} de {total}: {currentDescription}
+        </p>
+      ) : null}
+
       {total > 1 ? (
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {images.map((image, imageIndex) => (
@@ -99,13 +104,19 @@ export function Gallery({ images, title }: GalleryProps) {
               type="button"
               onClick={() => setIndex(imageIndex)}
               className={cn(
-                "border-border relative aspect-square w-16 shrink-0 overflow-hidden rounded-sm border",
+                "border-border bg-ink relative size-16 shrink-0 overflow-hidden rounded-sm border",
                 imageIndex === index && "ring-brand ring-2",
               )}
               aria-label={`Ver foto ${imageIndex + 1}`}
               aria-current={imageIndex === index}
             >
-              <Image src={image.url} alt="" fill sizes="64px" className="object-cover" />
+              <Image
+                src={image.url}
+                alt=""
+                fill
+                sizes="64px"
+                className="object-contain object-center"
+              />
             </button>
           ))}
         </div>

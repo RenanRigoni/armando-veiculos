@@ -5,20 +5,66 @@ export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const MAX_UPLOAD_BYTES = 15 * 1024 * 1024; // 15 MB antes da compressão
 const MAX_DIMENSION = 1920;
 const WEBP_QUALITY = 0.82;
+const STORAGE_PATH_PREFIX = `/storage/v1/object/public/${VEHICLE_BUCKET}/`;
+
+function getTrustedStorageOrigin(): URL | null {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!base) return null;
+
+  try {
+    const url = new URL(base);
+    if (url.protocol !== "https:" || url.username || url.password) return null;
+    return url;
+  } catch {
+    return null;
+  }
+}
+
+function isTrustedStorageUrl(path: string, storageOrigin: URL): boolean {
+  try {
+    const url = new URL(path);
+    return (
+      url.protocol === "https:" &&
+      !url.username &&
+      !url.password &&
+      !url.search &&
+      !url.hash &&
+      url.origin === storageOrigin.origin &&
+      url.pathname.startsWith(STORAGE_PATH_PREFIX)
+    );
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Converte o caminho salvo no banco em URL exibível.
- * Aceita três formatos: URL absoluta, caminho local ("/algo.svg") e
- * caminho dentro do bucket do Supabase Storage.
+ * Aceita URL absoluta confiável do bucket, o placeholder local e caminhos
+ * internos do bucket do Supabase Storage.
  */
 export function resolveImageUrl(path: string | null | undefined): string {
   if (!path) return PLACEHOLDER_IMAGE;
-  if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  if (path.startsWith("/")) return path;
 
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!base) return PLACEHOLDER_IMAGE;
-  return `${base}/storage/v1/object/public/${VEHICLE_BUCKET}/${path}`;
+  const storageOrigin = getTrustedStorageOrigin();
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return storageOrigin && isTrustedStorageUrl(path, storageOrigin)
+      ? path
+      : PLACEHOLDER_IMAGE;
+  }
+
+  if (path.startsWith("/")) {
+    return path === PLACEHOLDER_IMAGE ? path : PLACEHOLDER_IMAGE;
+  }
+
+  if (!storageOrigin || /[?#\\]/.test(path)) return PLACEHOLDER_IMAGE;
+
+  const segments = path.split("/");
+  if (segments.some((segment) => !segment || segment === "." || segment === "..")) {
+    return PLACEHOLDER_IMAGE;
+  }
+
+  const encodedPath = segments.map(encodeURIComponent).join("/");
+  return `${storageOrigin.origin}${STORAGE_PATH_PREFIX}${encodedPath}`;
 }
 
 export function validateImageFile(file: File): string | null {

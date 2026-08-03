@@ -10,7 +10,7 @@ export default function VehicleLoading() {
       <main id="main-content" tabIndex={-1} className="flex-1">
         <Section className="py-8 md:py-10">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
-            <Skeleton className="aspect-[3/2] w-full" />
+            <Skeleton className="h-[clamp(18rem,55svh,36rem)] w-full" />
             <div className="flex flex-col gap-4">
               <Skeleton className="h-6 w-24" />
               <Skeleton className="h-10 w-3/4" />

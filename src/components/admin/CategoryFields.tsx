@@ -1,22 +1,32 @@
 import type { UseFormRegister } from "react-hook-form";
 
-import { Label, Input } from "@/components/ui/Field";
+import { FieldError, Label, Input } from "@/components/ui/Field";
 import type { VehicleDraftSchema } from "@/schemas/vehicle";
 import type { VehicleCategory } from "@/types/vehicle";
 
 type CategoryFieldsProps = {
   category: VehicleCategory;
   register: UseFormRegister<VehicleDraftSchema>;
+  mileageError?: string;
 };
 
 /** Campos específicos por categoria — nunca força km/portas em barco, nem horas de motor em carro. */
-export function CategoryFields({ category, register }: CategoryFieldsProps) {
+export function CategoryFields({ category, register, mileageError }: CategoryFieldsProps) {
   if (category === "carros") {
     return (
       <>
         <div>
           <Label htmlFor="mileage">Quilometragem</Label>
-          <Input id="mileage" type="number" inputMode="numeric" {...register("mileage")} />
+          <Input
+            id="mileage"
+            type="text"
+            inputMode="numeric"
+            placeholder="Ex.: 138000 ou 138.000"
+            aria-invalid={Boolean(mileageError)}
+            aria-describedby={mileageError ? "mileage-error" : undefined}
+            {...register("mileage")}
+          />
+          <FieldError id="mileage-error">{mileageError}</FieldError>
         </div>
         <div>
           <Label htmlFor="transmission">Câmbio</Label>
@@ -47,7 +57,16 @@ export function CategoryFields({ category, register }: CategoryFieldsProps) {
       <>
         <div>
           <Label htmlFor="mileage">Quilometragem</Label>
-          <Input id="mileage" type="number" inputMode="numeric" {...register("mileage")} />
+          <Input
+            id="mileage"
+            type="text"
+            inputMode="numeric"
+            placeholder="Ex.: 25000 ou 25.000"
+            aria-invalid={Boolean(mileageError)}
+            aria-describedby={mileageError ? "mileage-error" : undefined}
+            {...register("mileage")}
+          />
+          <FieldError id="mileage-error">{mileageError}</FieldError>
         </div>
         <div>
           <Label htmlFor="engineDisplacement">Cilindrada (cc)</Label>
