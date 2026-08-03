@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design system Armando Veículos
+   Cores amostradas do logo oficial (Logo/thumb (1).png):
+   preto #010203 · branco #FFFFFF · vermelho dominante #E11E25
+   --------------------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #050506;
+  --color-surface: #0e0f11;
+  --color-surface-2: #17191c;
+  --color-border: #26292e;
+
+  --color-brand: #e11e25;
+  --color-brand-bright: #ed1c24;
+  --color-brand-dark: #b3141a;
+
+  --color-fg: #ffffff;
+  --color-fg-muted: #a1a6ad;
+
+  --color-success: #22a06b;
+  --color-warning: #d98a0b;
+
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    /* nenhuma página pode rolar na horizontal, de 360px a 1920px */
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: var(--color-fg);
+  }
+}
+
+@layer components {
+  /* Separador de marca: linha vermelha curta, usada acima de títulos de seção. */
+  .brand-rule::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin-bottom: 1rem;
+    background-color: var(--color-brand);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
