@@ -3,6 +3,7 @@ import { Banknote, Handshake, Repeat, ShoppingCart } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonLink } from "@/components/ui/Button";
 import { business } from "@/config/business";
+import { messages, whatsappLinks } from "@/lib/whatsapp";
 
 const services = [
   { icon: ShoppingCart, label: "Compra" },
@@ -22,7 +23,7 @@ export function AboutSection() {
             motos e náutica em {business.address.city} - {business.address.state}.
           </p>
           <div className="mt-8">
-            <ButtonLink href="/#contato" variant="secondary">
+            <ButtonLink href={whatsappLinks.sales(messages.quickContact())} variant="secondary">
               Falar com a equipe
             </ButtonLink>
           </div>

@@ -20,17 +20,28 @@ export function CategoryCardMedia({
   firstChangeDelayMs = intervalMs,
 }: CategoryCardMediaProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  // Só monta a foto quando o carrossel realmente chega nela — evita buscar todas
+  // as fotos do card de largada, já que o object-fit "fill" faz todas ocuparem a
+  // mesma área e o lazy-loading nativo (baseado em posição, não em opacidade) não
+  // adiaria nada sozinho.
+  const [loadedIndices, setLoadedIndices] = useState<ReadonlySet<number>>(() => new Set([0]));
 
   useEffect(() => {
     if (images.length < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    function advance() {
+      setActiveIndex((current) => {
+        const next = (current + 1) % images.length;
+        setLoadedIndices((prev) => (prev.has(next) ? prev : new Set(prev).add(next)));
+        return next;
+      });
+    }
+
     let intervalId: ReturnType<typeof setInterval> | undefined;
     const timeoutId = setTimeout(() => {
-      setActiveIndex((current) => (current + 1) % images.length);
-      intervalId = setInterval(() => {
-        setActiveIndex((current) => (current + 1) % images.length);
-      }, intervalMs);
+      advance();
+      intervalId = setInterval(advance, intervalMs);
     }, firstChangeDelayMs);
 
     return () => {
@@ -41,20 +52,22 @@ export function CategoryCardMedia({
 
   return (
     <>
-      {images.map((src, index) => (
-        <Image
-          key={src}
-          src={src}
-          alt={alt}
-          fill
-          sizes="(min-width: 640px) 33vw, 92vw"
-          priority={index === 0}
-          className={cn(
-            "object-cover transition-[opacity,transform] duration-700 group-hover:scale-105",
-            index === activeIndex ? "opacity-100" : "opacity-0",
-          )}
-        />
-      ))}
+      {images.map((src, index) =>
+        loadedIndices.has(index) ? (
+          <Image
+            key={src}
+            src={src}
+            alt={alt}
+            fill
+            sizes="(min-width: 640px) 33vw, 92vw"
+            priority={index === 0}
+            className={cn(
+              "object-cover transition-[opacity,transform] duration-700 group-hover:scale-105",
+              index === activeIndex ? "opacity-100" : "opacity-0",
+            )}
+          />
+        ) : null,
+      )}
     </>
   );
 }
