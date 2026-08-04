@@ -34,7 +34,10 @@ function StatusAction({
 }) {
   return (
     <form action={setVehicleStatus.bind(null, vehicleId, status)}>
-      <button type="submit" className="text-fg-muted hover:text-brand-text min-h-11 text-xs whitespace-nowrap">
+      <button
+        type="submit"
+        className="border-border text-fg-muted hover:border-brand hover:text-brand-text min-h-11 rounded-sm border px-2.5 text-xs whitespace-nowrap"
+      >
         {label}
       </button>
     </form>
@@ -42,37 +45,43 @@ function StatusAction({
 }
 
 function StatusActions({ vehicle }: { vehicle: AdminVehicle }) {
-  switch (vehicle.status) {
-    case "rascunho":
-      return isPublishReady(vehicle) ? (
-        <StatusAction vehicleId={vehicle.id} status="ativo" label="Publicar" />
-      ) : null;
-    case "ativo":
-      return (
-        <>
-          <StatusAction vehicleId={vehicle.id} status="reservado" label="Reservar" />
-          <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
-          <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
-        </>
-      );
-    case "reservado":
-      return (
-        <>
-          <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
-          <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
-          <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
-        </>
-      );
-    case "vendido":
-      return (
-        <>
-          <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
-          <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
-        </>
-      );
-    default:
-      return null;
-  }
+  const actions = (() => {
+    switch (vehicle.status) {
+      case "rascunho":
+        return isPublishReady(vehicle) ? (
+          <StatusAction vehicleId={vehicle.id} status="ativo" label="Publicar" />
+        ) : null;
+      case "ativo":
+        return (
+          <>
+            <StatusAction vehicleId={vehicle.id} status="reservado" label="Reservar" />
+            <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+          </>
+        );
+      case "reservado":
+        return (
+          <>
+            <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
+            <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+          </>
+        );
+      case "vendido":
+        return (
+          <>
+            <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+          </>
+        );
+      default:
+        return null;
+    }
+  })();
+
+  if (!actions) return null;
+
+  return <div className="flex flex-wrap items-center gap-2">{actions}</div>;
 }
 
 export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
@@ -126,25 +135,27 @@ export function VehicleTableRow({ vehicle }: { vehicle: AdminVehicle }) {
         {formatDate(vehicle.updatedAt)}
       </td>
       <td className="px-4 py-3">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Link
-            href={`/admin/veiculos/${vehicle.id}/editar`}
-            className="text-fg-muted hover:text-brand-text flex min-h-11 items-center gap-1 text-sm"
-          >
-            <Pencil size={14} aria-hidden />
-            Editar
-          </Link>
-          {isPublic && vehicle.slug ? (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link
-              href={`/estoque/${vehicle.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/admin/veiculos/${vehicle.id}/editar`}
               className="text-fg-muted hover:text-brand-text flex min-h-11 items-center gap-1 text-sm"
             >
-              <ExternalLink size={14} aria-hidden />
-              Ver no site
+              <Pencil size={14} aria-hidden />
+              Editar
             </Link>
-          ) : null}
+            {isPublic && vehicle.slug ? (
+              <Link
+                href={`/estoque/${vehicle.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-fg-muted hover:text-brand-text flex min-h-11 items-center gap-1 text-sm"
+              >
+                <ExternalLink size={14} aria-hidden />
+                Ver no site
+              </Link>
+            ) : null}
+          </div>
           <StatusActions vehicle={vehicle} />
           <ConfirmDialog
             action={deleteVehicle.bind(null, vehicle.id)}
