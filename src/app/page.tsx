@@ -22,15 +22,19 @@ export default async function HomePage() {
     getFeaturedVehicles(8),
     getInventoryFacets(),
     Promise.all(
-      CATEGORIES.map((category) => getVehicles({ category }, { page: 1, perPage: 1 })),
+      CATEGORIES.map((category) => getVehicles({ category }, { page: 1, perPage: 6 })),
     ),
   ]);
 
-  const categories: CategoryCardData[] = CATEGORIES.map((category, index) => ({
-    category,
-    count: categoryResults[index].total,
-    image: categoryResults[index].items[0]?.coverImage ?? PLACEHOLDER_IMAGE,
-  }));
+  const categories: CategoryCardData[] = CATEGORIES.map((category, index) => {
+    const images = [...new Set(categoryResults[index].items.map((item) => item.coverImage))];
+
+    return {
+      category,
+      count: categoryResults[index].total,
+      images: images.length ? images : [PLACEHOLDER_IMAGE],
+    };
+  });
 
   return (
     <>

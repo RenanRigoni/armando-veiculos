@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { CategoryCardMedia } from "@/components/home/CategoryCardMedia";
 import { CATEGORY_LABELS } from "@/types/vehicle";
 import type { VehicleCategory } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
@@ -12,9 +12,18 @@ const descriptors: Record<VehicleCategory, string> = {
   nautica: "Lanchas e jet skis.",
 };
 
+const ROTATE_INTERVAL_MS = 5000;
+
+/** Escalona a primeira troca de cada card em terços do intervalo. */
+const firstChangeDelayMs: Record<VehicleCategory, number> = {
+  carros: ROTATE_INTERVAL_MS,
+  motos: ROTATE_INTERVAL_MS / 3,
+  nautica: (ROTATE_INTERVAL_MS / 3) * 2,
+};
+
 export type CategoryCardData = {
   category: VehicleCategory;
-  image: string;
+  images: string[];
   count: number;
 };
 
@@ -26,15 +35,14 @@ export function CategoryCards({ categories }: { categories: CategoryCardData[] }
           key={item.category}
           href={`/estoque?categoria=${item.category}`}
           className={cn(
-            "group border-border bg-surface relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md border",
+            "group border-border bg-surface hover:border-brand/50 relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md border transition-[border-color,box-shadow] duration-300 hover:shadow-[0_12px_32px_-16px_rgba(225,30,37,0.35)]",
           )}
         >
-          <Image
-            src={item.image}
+          <CategoryCardMedia
+            images={item.images}
             alt={CATEGORY_LABELS[item.category]}
-            fill
-            sizes="(min-width: 640px) 33vw, 92vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            intervalMs={ROTATE_INTERVAL_MS}
+            firstChangeDelayMs={firstChangeDelayMs[item.category]}
           />
           <div className="from-ink absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
 
