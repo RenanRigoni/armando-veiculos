@@ -49,10 +49,17 @@ export const business = {
   socials: {} as Partial<Record<"instagram" | "facebook" | "youtube", string>>,
 } as const;
 
-/** Endereço em uma linha, para rodapé e mensagens de WhatsApp. */
+/** Endereço em uma linha, para JSON-LD, mapa e mensagens de WhatsApp. */
 export function formatFullAddress(): string {
   const { street, district, city, state, zip } = business.address;
   return `${street}, ${district}, ${city} - ${state}, ${zip}`;
+}
+
+/** Endereço formatado para exibição na UI (rodapé, seção de contato). */
+export function formatDisplayAddress(): string {
+  const { street, district, city, state, zip } = business.address;
+  const shortStreet = street.replace(/^Avenida\b/, "Av.");
+  return `${shortStreet} - ${district}, ${city} - ${state} | ${zip}`;
 }
 
 /**

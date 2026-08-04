@@ -32,6 +32,16 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
   const [category, setCategory] = useState(initialValues.category ?? "");
   const [make, setMake] = useState(initialValues.make ?? "");
   const [model, setModel] = useState(initialValues.model ?? "");
+  const availableMakes =
+    category && isVehicleCategory(category) ? facets.makesByCategory[category] : facets.makes;
+  const availableModels =
+    category && isVehicleCategory(category) ? facets.modelsByCategory[category] : facets.models;
+
+  function handleCategoryChange(value: string) {
+    setCategory(value);
+    setMake("");
+    setModel("");
+  }
   const [yearMin, setYearMin] = useState(initialValues.yearMin ? String(initialValues.yearMin) : "");
   const [priceMax, setPriceMax] = useState(initialValues.priceMax ? String(initialValues.priceMax) : "");
   const [mileageMax, setMileageMax] = useState(
@@ -70,7 +80,7 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
         <Select
           id={`${idPrefix}-categoria`}
           value={category}
-          onChange={(event) => setCategory(event.target.value)}
+          onChange={(event) => handleCategoryChange(event.target.value)}
         >
           <option value="">Todos</option>
           {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
@@ -89,7 +99,7 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
           onChange={(event) => setMake(event.target.value)}
         >
           <option value="">Todas</option>
-          {facets.makes.map((item) => (
+          {availableMakes.map((item) => (
             <option key={item} value={item}>
               {item}
             </option>
@@ -105,7 +115,7 @@ export function SearchFilters({ facets, initialValues, onApplied }: SearchFilter
           onChange={(event) => setModel(event.target.value)}
         >
           <option value="">Todos</option>
-          {facets.models.map((item) => (
+          {availableModels.map((item) => (
             <option key={item} value={item}>
               {item}
             </option>

@@ -136,6 +136,8 @@ export type InventoryFacets = {
   models: string[];
   years: number[];
   priceRange: { min: number; max: number };
+  makesByCategory: Record<VehicleCategory, string[]>;
+  modelsByCategory: Record<VehicleCategory, string[]>;
 };
 
 export type InventoryStats = {

@@ -9,6 +9,7 @@ import type {
   InventoryStats,
   Pagination,
   Vehicle,
+  VehicleCategory,
   VehicleFilters,
   VehicleImage,
   VehicleListResult,
@@ -221,13 +222,19 @@ export async function getRelatedVehicles(vehicle: Vehicle, limit = 4): Promise<V
   return ((data ?? []) as unknown as VehicleQueryRow[]).filter(isCompleteVehicleRow).map(mapVehicle);
 }
 
+const VEHICLE_CATEGORIES: VehicleCategory[] = ["carros", "motos", "nautica"];
+
+function sortedUnique(values: string[]): string[] {
+  return [...new Set(values)].sort((a, b) => a.localeCompare(b, "pt-BR"));
+}
+
 /** Alimenta os selects do formulário de busca com valores que existem no estoque. */
 export async function getInventoryFacets(): Promise<InventoryFacets> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("vehicles")
-    .select("make, model, year_model, price")
+    .select("category, make, model, year_model, price")
     .in("status", PUBLIC_STATUSES);
 
   if (error) throw new Error(`Falha ao carregar filtros: ${error.message}`);
@@ -240,14 +247,24 @@ export async function getInventoryFacets(): Promise<InventoryFacets> {
   );
   const prices = rows.map((row) => Number(row.price));
 
+  const makesByCategory = {} as Record<VehicleCategory, string[]>;
+  const modelsByCategory = {} as Record<VehicleCategory, string[]>;
+  for (const category of VEHICLE_CATEGORIES) {
+    const rowsInCategory = rows.filter((row) => row.category === category);
+    makesByCategory[category] = sortedUnique(rowsInCategory.map((row) => row.make));
+    modelsByCategory[category] = sortedUnique(rowsInCategory.map((row) => row.model));
+  }
+
   return {
-    makes: [...new Set(rows.map((row) => row.make))].sort((a, b) => a.localeCompare(b, "pt-BR")),
-    models: [...new Set(rows.map((row) => row.model))].sort((a, b) => a.localeCompare(b, "pt-BR")),
+    makes: sortedUnique(rows.map((row) => row.make)),
+    models: sortedUnique(rows.map((row) => row.model)),
     years: [...new Set(rows.map((row) => row.year_model))].sort((a, b) => b - a),
     priceRange: {
       min: prices.length ? Math.min(...prices) : 0,
       max: prices.length ? Math.max(...prices) : 0,
     },
+    makesByCategory,
+    modelsByCategory,
   };
 }
 

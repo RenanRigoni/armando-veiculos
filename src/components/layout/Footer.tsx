@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, MessageCircle, Phone } from "lucide-react";
 
-import { business, formatFullAddress } from "@/config/business";
+import { business, formatDisplayAddress } from "@/config/business";
 import { categoryNav, mainNav } from "@/config/navigation";
+import { messages, whatsappLinks } from "@/lib/whatsapp";
 
 const institutionalLinks = mainNav.filter((link) =>
   ["Início", "Estoque", "Sobre", "Contato"].includes(link.label),
@@ -66,10 +67,10 @@ export function Footer() {
             <ul className="flex flex-col gap-3 text-sm">
               <li className="flex gap-2">
                 <MapPin size={16} className="text-brand mt-0.5 shrink-0" aria-hidden />
-                <span className="text-fg-muted">{formatFullAddress()}</span>
+                <span className="text-fg-muted">{formatDisplayAddress()}</span>
               </li>
-              <li className="flex gap-2">
-                <Phone size={16} className="text-brand mt-0.5 shrink-0" aria-hidden />
+              <li className="flex items-center gap-2">
+                <Phone size={16} className="text-brand shrink-0" aria-hidden />
                 <a
                   href={business.phone.href}
                   className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center"
@@ -77,8 +78,14 @@ export function Footer() {
                   {business.phone.display}
                 </a>
               </li>
-              <li className="text-fg-muted">
-                Financiamento: {business.financing.contactName}, {business.financing.phoneDisplay}
+              <li className="flex items-center gap-2">
+                <MessageCircle size={16} className="text-brand shrink-0" aria-hidden />
+                <a
+                  href={whatsappLinks.financing(messages.financingQuickInterest())}
+                  className="touch-target text-fg-muted hover:text-brand-text inline-flex items-center"
+                >
+                  Financiamento
+                </a>
               </li>
             </ul>
 
