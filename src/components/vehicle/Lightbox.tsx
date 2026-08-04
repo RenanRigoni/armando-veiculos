@@ -52,18 +52,19 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
   return (
     <div
       ref={dialogRef}
-      className="bg-ink/95 fixed inset-0 z-[60] flex flex-col"
+      className="bg-scrim/95 fixed inset-0 z-[60] flex flex-col"
       role="dialog"
       aria-modal="true"
       aria-labelledby={dialogTitleId}
       tabIndex={-1}
+      onClick={onClose}
     >
       <div className="flex items-center justify-between p-4">
         <h2 id={dialogTitleId} className="sr-only">
           Galeria de fotos: {title}
         </h2>
         {total > 1 ? (
-          <p className="text-fg-muted text-sm" aria-hidden>
+          <p className="text-on-brand/60 text-sm" aria-hidden>
             {index + 1} / {total}
           </p>
         ) : (
@@ -73,7 +74,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
           ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          className="text-fg hover:text-brand-text inline-flex size-11 items-center justify-center"
+          className="text-on-brand hover:text-brand-text inline-flex size-11 items-center justify-center"
           aria-label="Fechar galeria"
         >
           <X size={28} aria-hidden />
@@ -94,22 +95,29 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Light
           alt={current.alt ?? title}
           eager
           className="max-h-[calc(95svh-4rem)] max-w-[95vw]"
+          onClick={(event) => event.stopPropagation()}
         />
 
         {total > 1 ? (
           <>
             <button
               type="button"
-              onClick={goPrev}
-              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:left-6"
+              onClick={(event) => {
+                event.stopPropagation();
+                goPrev();
+              }}
+              className="bg-scrim/60 hover:bg-brand text-on-brand absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:left-6"
               aria-label="Foto anterior"
             >
               <ChevronLeft size={28} aria-hidden />
             </button>
             <button
               type="button"
-              onClick={goNext}
-              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:right-6"
+              onClick={(event) => {
+                event.stopPropagation();
+                goNext();
+              }}
+              className="bg-scrim/60 hover:bg-brand text-on-brand absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full sm:right-6"
               aria-label="Próxima foto"
             >
               <ChevronRight size={28} aria-hidden />

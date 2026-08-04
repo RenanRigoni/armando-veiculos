@@ -51,11 +51,21 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={`${barlowCondensed.variable} ${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Aplica o tema salvo antes da hidratação, evitando flash de tema errado. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();",
+          }}
+        />
+      </head>
       <body className="bg-ink text-fg flex min-h-full flex-col">
         <a
           href="#main-content"
-          className="bg-brand-dark text-fg fixed top-3 left-3 z-[100] -translate-y-24 rounded-sm px-4 py-3 font-semibold transition-transform focus:translate-y-0"
+          className="bg-brand-dark text-on-brand fixed top-3 left-3 z-[100] -translate-y-24 rounded-sm px-4 py-3 font-semibold transition-transform focus:translate-y-0"
         >
           Pular para o conteúdo
         </a>

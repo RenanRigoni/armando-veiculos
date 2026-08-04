@@ -5,6 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { DesktopNavigation } from "@/components/layout/DesktopNavigation";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { business } from "@/config/business";
 import { messages, whatsappLinks } from "@/lib/whatsapp";
 
@@ -20,16 +21,25 @@ export function Header() {
           <Image
             src="/logo-dark.png"
             alt={business.name}
-            width={241}
-            height={92}
+            width={2109}
+            height={802}
             sizes="(min-width: 768px) 116px, 94px"
-            className="h-9 w-auto md:h-11"
+            className="light:hidden h-9 w-auto md:h-11"
+          />
+          <Image
+            src="/logo-light.png"
+            alt={business.name}
+            width={2108}
+            height={801}
+            sizes="(min-width: 768px) 116px, 94px"
+            className="light:block hidden h-9 w-auto md:h-11"
           />
         </Link>
 
         <DesktopNavigation />
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <ButtonLink
             href={whatsappLinks.sales(messages.quickContact())}
             size="sm"

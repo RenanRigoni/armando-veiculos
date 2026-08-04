@@ -12,12 +12,13 @@ const base =
   "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-brand text-fg hover:bg-brand-dark active:bg-brand-dark",
+  primary: "bg-brand text-on-brand hover:bg-brand-dark active:bg-brand-dark",
   secondary:
-    "border border-border-strong bg-transparent text-fg hover:border-brand hover:text-brand-text",
+    "border border-border-strong bg-transparent text-fg hover:border-brand hover:text-brand-text " +
+    "light:border-transparent light:bg-scrim light:text-on-brand light:hover:bg-brand-dark",
   ghost: "bg-transparent text-fg-muted hover:text-fg",
   danger:
-    "border border-brand bg-transparent text-brand-text hover:bg-brand-dark hover:text-fg",
+    "border border-brand bg-transparent text-brand-text hover:bg-brand-dark hover:text-on-brand",
 };
 
 const sizes: Record<Size, string> = {

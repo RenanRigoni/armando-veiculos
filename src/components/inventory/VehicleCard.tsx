@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
@@ -25,14 +26,14 @@ export function VehicleCard({
       : null;
 
   return (
-    <article className="border-border bg-surface flex flex-col overflow-hidden rounded-md border">
+    <article className="border-border bg-surface group hover:border-brand/50 relative flex flex-col overflow-hidden rounded-md border transition-[border-color,box-shadow] duration-300 hover:shadow-[0_12px_32px_-16px_rgba(225,30,37,0.35)]">
       <div className="bg-ink relative h-56 w-full overflow-hidden">
         <Image
           src={vehicle.coverImage}
           alt={vehicle.title}
           fill
           sizes="(min-width: 1280px) 23vw, (min-width: 768px) 45vw, 92vw"
-          className="object-contain object-center"
+          className="object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.06]"
         />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
           <Badge tone="muted" className="bg-ink/80 border-border/60">
@@ -45,8 +46,10 @@ export function VehicleCard({
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
           <Heading className="text-lg leading-tight normal-case">
-            {vehicle.make} {vehicle.model}
-            {vehicle.version ? ` ${vehicle.version}` : ""}
+            <Link href={`/estoque/${vehicle.slug}`} className="static after:absolute after:inset-0">
+              {vehicle.make} {vehicle.model}
+              {vehicle.version ? ` ${vehicle.version}` : ""}
+            </Link>
           </Heading>
           {years ? <p className="text-fg-muted mt-1 text-sm">{years}</p> : null}
         </div>
@@ -69,7 +72,7 @@ export function VehicleCard({
             ) : null}
             <p className="font-display text-xl tracking-tight">{price}</p>
           </div>
-          <ButtonLink href={`/estoque/${vehicle.slug}`} size="sm">
+          <ButtonLink href={`/estoque/${vehicle.slug}`} size="sm" className="relative z-10">
             Ver detalhes
           </ButtonLink>
         </div>

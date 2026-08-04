@@ -182,7 +182,7 @@ export default async function VehiclePage({ params }: VehiclePageProps) {
           </div>
         </Section>
 
-        <ContactSection />
+        <ContactSection tone="ink" />
 
         <RelatedVehicles vehicles={related} />
       </main>

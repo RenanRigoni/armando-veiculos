@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "8mb",
     },
   },
+  // 127.0.0.1 e localhost são hosts distintos pro dev server; sem isso o HMR
+  // trava silenciosamente (JS para de atualizar) se a aba abrir via 127.0.0.1.
+  allowedDevOrigins: ["localhost", "127.0.0.1"],
 };
 
 export default nextConfig;

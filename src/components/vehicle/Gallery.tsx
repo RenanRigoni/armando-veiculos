@@ -53,10 +53,11 @@ export function Gallery({ images, title }: GalleryProps) {
             src={current.url}
             alt={current.alt ?? title}
             eager
+            className="animate-fade-in"
           />
 
           {total > 1 ? (
-            <span className="bg-ink/80 absolute right-3 bottom-3 rounded-sm px-2 py-1 text-xs">
+            <span className="bg-scrim/80 text-on-brand absolute right-3 bottom-3 rounded-sm px-2 py-1 text-xs">
               {index + 1} / {total}
             </span>
           ) : null}
@@ -70,7 +71,7 @@ export function Gallery({ images, title }: GalleryProps) {
                 event.stopPropagation();
                 goPrev();
               }}
-              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
+              className="bg-scrim/60 hover:bg-brand text-on-brand absolute top-1/2 left-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
               aria-label="Foto anterior"
             >
               <ChevronLeft size={22} aria-hidden />
@@ -81,7 +82,7 @@ export function Gallery({ images, title }: GalleryProps) {
                 event.stopPropagation();
                 goNext();
               }}
-              className="bg-ink/60 hover:bg-brand text-fg absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
+              className="bg-scrim/60 hover:bg-brand text-on-brand absolute top-1/2 right-2 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full"
               aria-label="Próxima foto"
             >
               <ChevronRight size={22} aria-hidden />

@@ -38,9 +38,16 @@ export function Hero() {
             <Image
               src="/logo-dark.png"
               alt=""
-              width={481}
-              height={184}
-              className="h-auto w-full"
+              width={2109}
+              height={802}
+              className="light:hidden h-auto w-full"
+            />
+            <Image
+              src="/logo-light.png"
+              alt=""
+              width={2108}
+              height={801}
+              className="light:block hidden h-auto w-full"
             />
             <div className="brand-rule text-fg-muted mt-10 text-sm tracking-[0.18em] uppercase">
               Mirandópolis, SP

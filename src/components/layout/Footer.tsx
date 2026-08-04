@@ -21,9 +21,16 @@ export function Footer() {
             <Image
               src="/logo-dark.png"
               alt={business.name}
-              width={241}
-              height={92}
-              className="h-11 w-auto"
+              width={2109}
+              height={802}
+              className="light:hidden h-11 w-auto"
+            />
+            <Image
+              src="/logo-light.png"
+              alt={business.name}
+              width={2108}
+              height={801}
+              className="light:block hidden h-11 w-auto"
             />
             <p className="text-fg-muted mt-4 max-w-xs text-sm">
               Compra, venda, consignação e financiamento de carros, motos e náutica.

@@ -56,7 +56,7 @@ function StatusActions({ vehicle }: { vehicle: AdminVehicle }) {
           <>
             <StatusAction vehicleId={vehicle.id} status="reservado" label="Reservar" />
             <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
-            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Desativar" />
           </>
         );
       case "reservado":
@@ -64,14 +64,14 @@ function StatusActions({ vehicle }: { vehicle: AdminVehicle }) {
           <>
             <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
             <StatusAction vehicleId={vehicle.id} status="vendido" label="Marcar vendido" />
-            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Desativar" />
           </>
         );
       case "vendido":
         return (
           <>
             <StatusAction vehicleId={vehicle.id} status="ativo" label="Reativar" />
-            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Despublicar" />
+            <StatusAction vehicleId={vehicle.id} status="rascunho" label="Desativar" />
           </>
         );
       default:

@@ -39,7 +39,7 @@ export function SummaryPanel({ vehicle }: { vehicle: Vehicle }) {
       </div>
 
       {quickSpecs.length > 0 ? (
-        <ul className="border-border text-fg-muted mt-6 grid grid-cols-2 gap-3 border-y py-4 text-sm sm:grid-cols-4">
+        <ul className="border-border text-fg-muted mt-6 grid grid-cols-2 gap-3 border-y py-4 text-base sm:grid-cols-4">
           {quickSpecs.map((spec) => (
             <li key={spec.label} className="flex items-center gap-1.5">
               <spec.icon size={16} className="text-brand shrink-0" aria-hidden />
@@ -54,12 +54,12 @@ export function SummaryPanel({ vehicle }: { vehicle: Vehicle }) {
           <MessageCircle size={18} aria-hidden />
           Tenho interesse
         </ButtonLink>
-        <div className="flex flex-wrap gap-3">
-          <ButtonLink href="#financiamento" variant="secondary">
+        <div className="grid grid-cols-2 gap-3">
+          <ButtonLink href="#financiamento" variant="secondary" className="w-full">
             <Wallet size={16} aria-hidden />
             Simular financiamento
           </ButtonLink>
-          <ButtonLink href="#troca" variant="secondary">
+          <ButtonLink href="#troca" variant="secondary" className="w-full">
             <Repeat size={16} aria-hidden />
             Tenho veículo na troca
           </ButtonLink>

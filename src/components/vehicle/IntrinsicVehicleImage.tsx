@@ -1,3 +1,5 @@
+import type { MouseEventHandler } from "react";
+
 import { cn } from "@/lib/utils";
 
 type IntrinsicVehicleImageProps = {
@@ -5,6 +7,7 @@ type IntrinsicVehicleImageProps = {
   alt: string;
   eager?: boolean;
   className?: string;
+  onClick?: MouseEventHandler<HTMLImageElement>;
 };
 
 /**
@@ -18,6 +21,7 @@ export function IntrinsicVehicleImage({
   alt,
   eager = false,
   className,
+  onClick,
 }: IntrinsicVehicleImageProps) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- Remote legacy photos have unknown, mixed intrinsic dimensions.
@@ -29,6 +33,7 @@ export function IntrinsicVehicleImage({
       decoding="async"
       referrerPolicy="no-referrer"
       className={cn("block h-auto w-auto max-h-full max-w-full object-contain", className)}
+      onClick={onClick}
     />
   );
 }
